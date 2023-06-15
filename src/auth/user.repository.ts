@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { LoginDto } from './dto/login.dto';
 import { NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { SearchUserDto } from './dto/search-user.dto';
 
 export class UserRepository extends Repository<User> {
   constructor(
@@ -21,6 +22,24 @@ export class UserRepository extends Repository<User> {
     );
   }
 
+  async getUsers(filterDto: SearchUserDto): Promise<User[]> {
+    const { status, search } = filterDto;
+    const query = this.userRepository.createQueryBuilder('user');
+
+    if (status) {
+      query.andWhere('user.status = :status', { status });
+    }
+    if (search) {
+      query.andWhere('(user.name LIKE :search OR user.email LIKE :search)', {
+        search: `%${search}%`,
+      });
+    }
+
+    const products = await query.getMany();
+
+    return products;
+  }
+
   async register(registerDto: RegisterDto): Promise<User> {
     const { name, email, password } = registerDto;
     const oldUser = await this.findOne({
@@ -28,7 +47,6 @@ export class UserRepository extends Repository<User> {
         email,
       },
     });
-    console.log('oldUser       ', oldUser);
     if (oldUser) {
       throw new NotFoundException({
         statusCode: 404,

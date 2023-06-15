@@ -6,6 +6,8 @@ import { UserRepository } from './user.repository';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { JwtService } from '@nestjs/jwt';
+import { User } from './entities/user.entity';
+import { SearchUserDto } from './dto/search-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +18,18 @@ export class AuthService {
 
   register(registerDto: RegisterDto) {
     return this.userRepository.register(registerDto);
+  }
+
+  async findAll(filterDto: SearchUserDto): Promise<User[]> {
+    return this.userRepository.getUsers(filterDto);
+  }
+
+  async findOne(id: string): Promise<User> {
+    return this.userRepository.findOne({
+      where: {
+        id,
+      },
+    });
   }
 
   login(loginDto: LoginDto) {

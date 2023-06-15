@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { UserStatus } from '../user-status.enum';
+import { CustomerStatus } from '../customer-status.enum';
 
 @Entity()
-export class User extends BaseEntity {
+export class Customer extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
@@ -14,10 +14,10 @@ export class User extends BaseEntity {
   password: string;
   @Column({
     type: 'enum',
-    enum: UserStatus,
-    default: UserStatus.ACTIVE,
+    enum: CustomerStatus,
+    default: CustomerStatus.ACTIVE,
   })
-  status: UserStatus;
+  status: CustomerStatus;
 
   token: string;
 }

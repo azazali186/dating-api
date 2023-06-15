@@ -2,11 +2,12 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 
 export const typeOrmConfig: TypeOrmModuleOptions = {
-  name: 'default',
-  type: 'mongodb',
-  url: process.env.DB_URL_MONGO,
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
+  type: 'postgres',
+  host: process.env.DB_PRIMARY_HOSTNAME,
+  port: parseInt(process.env.DB_PRIMARY_PORT),
+  username: 'postgres',
+  password: 'Aj189628@',
+  database: 'dating-app',
   entities: [],
   synchronize: true,
   autoLoadEntities: true,
