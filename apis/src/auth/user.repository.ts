@@ -55,12 +55,12 @@ export class UserRepository extends Repository<User> {
     let roleName;
     let role = await Role.findOne({
       where: {
-        name: 'system',
+        name: 'customer',
       },
     });
     if (!role) {
       role = Role.create({
-        name: 'system',
+        name: 'customer',
       });
       await role.save();
 

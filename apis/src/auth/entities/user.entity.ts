@@ -43,6 +43,4 @@ export class User extends BaseEntity {
     },
   })
   role: Role[];
-
-  roleName: string;
 }
