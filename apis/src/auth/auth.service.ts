@@ -26,6 +26,7 @@ export class AuthService {
 
   async findOne(id: string): Promise<User> {
     return this.userRepository.findOne({
+      relations: ['role'],
       where: {
         id,
       },

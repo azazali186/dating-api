@@ -2,7 +2,6 @@ import {
   BaseEntity,
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
@@ -16,6 +15,7 @@ export class Role extends BaseEntity {
   @Column()
   name: string;
   @Column({
+    select: false,
     type: 'enum',
     enum: RoleStatus,
     default: RoleStatus.ACTIVE,

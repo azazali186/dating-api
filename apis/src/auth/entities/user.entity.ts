@@ -22,6 +22,7 @@ export class User extends BaseEntity {
   @Column({ select: false })
   password: string;
   @Column({
+    select: false,
     type: 'enum',
     enum: UserStatus,
     default: UserStatus.ACTIVE,

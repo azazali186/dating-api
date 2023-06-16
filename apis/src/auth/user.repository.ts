@@ -10,7 +10,6 @@ import { NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SearchUserDto } from './dto/search-user.dto';
 import { Role } from 'src/roles/entities/role.entity';
-// import { UserRole } from './entities/user-role.entity';
 
 export class UserRepository extends Repository<User> {
   constructor(
@@ -49,7 +48,7 @@ export class UserRepository extends Repository<User> {
     const { name, email } = registerDto;
     const oldUser = await this.findOne({
       where: {
-        email,
+        email: email.toLowerCase(),
       },
     });
     let roleId;
@@ -84,24 +83,20 @@ export class UserRepository extends Repository<User> {
 
     const user = new User();
     user.name = name;
-    user.email = email;
+    user.email = email.toLowerCase();
     user.password = hashPassord;
     user.role = [role];
     await user.save();
-    // const userRole = new UserRole();
-    // userRole.userId = user.id;
-    // userRole.roleId = roleId;
-    // await userRole.save();
     const { status, password, ...others } = user;
 
-    return { ...others, role: roleName };
+    return { ...others };
   }
 
   async login(loginDto: LoginDto) {
     const { email, password } = loginDto;
     const user = await this.findOne({
       where: {
-        email,
+        email: email.toLowerCase(),
       },
     });
     if (!user) {
