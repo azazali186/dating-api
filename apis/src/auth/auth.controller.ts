@@ -5,7 +5,7 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
+  ParseUUIDPipe,
   Post,
   Query,
   ValidationPipe,
@@ -34,7 +34,7 @@ export class AuthController {
   }
 
   @Get('/users/:id')
-  findOne(@Param('id') id: string): Promise<User> {
+  findOne(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
     return this.authService.findOne(id);
   }
 

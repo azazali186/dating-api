@@ -18,6 +18,8 @@ export class Customer extends BaseEntity {
     default: CustomerStatus.ACTIVE,
   })
   status: CustomerStatus;
+  @Column({ nullable: true })
+  customerId: string;
 
   token: string;
 }

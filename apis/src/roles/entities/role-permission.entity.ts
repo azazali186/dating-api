@@ -1,11 +1,12 @@
+/* eslint-disable prettier/prettier */
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class Permission extends BaseEntity {
+export class RolePermission extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
-  name: string;
+  roleId: string;
   @Column()
-  path: string;
+  permissionId: string;
 }

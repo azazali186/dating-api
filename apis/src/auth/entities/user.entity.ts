@@ -1,6 +1,15 @@
 /* eslint-disable prettier/prettier */
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BaseEntity,
+  Column,
+  Entity,
+  JoinTable,
+  ManyToMany,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { UserStatus } from '../user-status.enum';
+import { Role } from 'src/roles/entities/role.entity';
 
 @Entity()
 export class User extends BaseEntity {
@@ -20,4 +29,19 @@ export class User extends BaseEntity {
   status: UserStatus;
 
   token: string;
+  @ManyToMany(() => Role)
+  @JoinTable({
+    name: 'user_role',
+    joinColumn: {
+      name: 'user',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'role',
+      referencedColumnName: 'id',
+    },
+  })
+  role: Role[];
+
+  roleName: string;
 }

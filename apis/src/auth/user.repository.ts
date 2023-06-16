@@ -1,4 +1,5 @@
 /* eslint-disable prettier/prettier */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { RegisterDto } from './dto/register.dto';
@@ -8,6 +9,8 @@ import { LoginDto } from './dto/login.dto';
 import { NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { SearchUserDto } from './dto/search-user.dto';
+import { Role } from 'src/roles/entities/role.entity';
+// import { UserRole } from './entities/user-role.entity';
 
 export class UserRepository extends Repository<User> {
   constructor(
@@ -35,18 +38,39 @@ export class UserRepository extends Repository<User> {
       });
     }
 
-    const products = await query.getMany();
+    const products = await query
+      .leftJoinAndSelect('user.role', 'role')
+      .getMany();
 
     return products;
   }
 
-  async register(registerDto: RegisterDto): Promise<User> {
-    const { name, email, password } = registerDto;
+  async register(registerDto: RegisterDto) {
+    const { name, email } = registerDto;
     const oldUser = await this.findOne({
       where: {
         email,
       },
     });
+    let roleId;
+    let roleName;
+    let role = await Role.findOne({
+      where: {
+        name: 'system',
+      },
+    });
+    if (!role) {
+      role = Role.create({
+        name: 'system',
+      });
+      await role.save();
+
+      roleId = role.id;
+      roleName = role.name;
+    } else {
+      roleId = role.id;
+      roleName = role.name;
+    }
     if (oldUser) {
       throw new NotFoundException({
         statusCode: 404,
@@ -54,15 +78,23 @@ export class UserRepository extends Repository<User> {
       });
     }
     const hashPassord = AES.encrypt(
-      password,
+      registerDto.password,
       process.env.ENCRYPTION_KEY,
     ).toString();
+
     const user = new User();
     user.name = name;
     user.email = email;
     user.password = hashPassord;
+    user.role = [role];
     await user.save();
-    return user;
+    // const userRole = new UserRole();
+    // userRole.userId = user.id;
+    // userRole.roleId = roleId;
+    // await userRole.save();
+    const { status, password, ...others } = user;
+
+    return { ...others, role: roleName };
   }
 
   async login(loginDto: LoginDto) {
